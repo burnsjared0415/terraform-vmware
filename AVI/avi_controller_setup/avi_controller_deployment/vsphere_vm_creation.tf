@@ -66,10 +66,9 @@ resource "vsphere_virtual_machine" "avi_contoller_ova" {
     }
   vapp {
     properties = {
-	  "mgmt-ip" = each.value
-	  #"mgmt-ip" = var.avi_controller_ip_list[count.index]
-      "mgmt-mask"  = var.avi_controller_netmask
-      "default-gw" = var.avi_controller_gateway
+     "mgmt-ip" = each.value
+     "mgmt-mask"  = var.avi_controller_netmask
+     "default-gw" = var.avi_controller_gateway
     }
   }
 }
