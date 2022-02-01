@@ -58,24 +58,24 @@ data "vsphere_network" "port_group" {
 
 ## Creation of AVI Virtual Service VIP for NSX-T Backed Cloud
 resource "avi_vsvip" "virtual_service_1_vip_nsx" {
-    for_each = var.virtual_service_list_nsxt
-	name = each.value.virtual_service_name
-    tenant_ref = "/api/tenant/?name=admin"
-	cloud_ref = data.avi_cloud.avi_cloud_name_nsx.id
-	tier1_lr = data.nsxt_policy_tier1_gateway.tier1_router.path
-	vip {
-		vip_id = each.value.virtual_service_id
-		ip_address {
-		 type = "V4"
-		 addr = each.value.virtual_service_1_vip_ip_addr
-        }		
-	   }
+  for_each = var.virtual_service_list_nsxt
+  name = each.value.virtual_service_name
+  tenant_ref = "/api/tenant/?name=admin"
+  cloud_ref = data.avi_cloud.avi_cloud_name_nsx.id
+  tier1_lr = data.nsxt_policy_tier1_gateway.tier1_router.path
+  vip {
+   vip_id = each.value.virtual_service_id
+     ip_address {
+       type = "V4"
+       addr = each.value.virtual_service_1_vip_ip_addr
+      }	
+  }
 }
 
 ## Collect vCenter Port Group for Placement Network on Virtual Service VIP
 data "avi_network" "vcenter_network" {
-    name = var.dvs_port_group
-    cloud_ref = data.avi_cloud.avi_cloud_name_vcenter.id
+  name = var.dvs_port_group
+  cloud_ref = data.avi_cloud.avi_cloud_name_vcenter.id
 }
 
 ## Collect VRF Context from vCenter Cloud
@@ -87,25 +87,25 @@ data "avi_vrfcontext" "vcenter_vrfcontext" {
 ## Creation of AVI Virtual Service VIP for vCenter Backed Cloud
 resource "avi_vsvip" "virtual_service_2_vip_vcenter" {
   for_each = var.virtual_service_list_vcenter
-	name = each.value.virtual_service_name
+  name = each.value.virtual_service_name
   tenant_ref = "/api/tenant/?name=admin"
   vrf_context_ref = data.avi_vrfcontext.vcenter_vrfcontext.id
-	cloud_ref = data.avi_cloud.avi_cloud_name_vcenter.id
-	vip {
-		vip_id = each.value.virtual_service_id
-		ip_address {
-		 type = "V4"
-		 addr = each.value.virtual_service_1_vip_ip_addr
-        }
-        placement_networks {
-           network_ref = data.avi_network.vcenter_network.id
-           subnet {
-		    ip_addr {
-		      addr = var.avi_vcenter_placement_network
-			  type = "V4"
-			}
-            mask = var.avi_vcenter_placement_network_mask
-           }
-		}
+  cloud_ref = data.avi_cloud.avi_cloud_name_vcenter.id
+  vip {
+   vip_id = each.value.virtual_service_id
+    ip_address {
+      type = "V4"
+      addr = each.value.virtual_service_1_vip_ip_addr
+     }
+     placement_networks {
+     network_ref = data.avi_network.vcenter_network.id
+      subnet { 
+       ip_addr {
+        addr = var.avi_vcenter_placement_network
+        type = "V4"
 	}
+        mask = var.avi_vcenter_placement_network_mask
+      }
+     }
+    }
 }
