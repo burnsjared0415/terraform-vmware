@@ -12,34 +12,34 @@ data "avi_systemconfiguration" "systemconfiguration" {
 }
 
 resource "avi_systemconfiguration" "avi" {
-    for_each = var.dns_ntp_ip_addresses
-	uuid = "default"
-	common_criteria_mode = var.common_criteria_mode
-	default_license_tier = var.license_type
-	dns_configuration {
-	search_domain = var.search_domain
-	 server_list {
-	  addr = each.value.dns1
-	  type = "V4"
-	 }
-	 server_list {
-	  addr = each.value.dns2
-	  type = "V4"
-	 }
-	}
-	ntp_configuration {
-	 ntp_servers {
-	  server {
-	    addr = each.value.ntp1
-	    type = "DNS"
-	  }
-	 }
-	 ntp_servers {
-	  server {
-	    addr = each.value.ntp2
-	    type = "DNS"
-	  }
-	 }
-	}
-	welcome_workflow_complete = true
+ for_each = var.dns_ntp_ip_addresses
+ uuid = "default"
+ common_criteria_mode = var.common_criteria_mode
+ default_license_tier = var.license_type
+ dns_configuration {
+  search_domain = var.search_domain
+  server_list {
+   addr = each.value.dns1
+   type = "V4"
+   }
+   server_list {
+    addr = each.value.dns2
+    type = "V4"
+   }
+ }
+ ntp_configuration {
+  ntp_servers {
+   server {
+    addr = each.value.ntp1
+    type = "DNS"
+   }
+  }
+  ntp_servers {
+   server {
+    addr = each.value.ntp2
+    type = "DNS"
+   }
+  }
+ }
+ welcome_workflow_complete = true
 }
