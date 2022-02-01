@@ -105,6 +105,11 @@ variable "avi_vcenter_placement_network_mask" {
   type = string
   default = ""
 }
+variable "avi_vcenter_vrfcontext_for_pool" { 
+  description = "AVI VRF Context Name for vCenter Virtual Service"
+  type = string
+  default = ""
+}
 
 ## NSX variables
 variable "nsx_user" { 
