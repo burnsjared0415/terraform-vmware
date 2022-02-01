@@ -83,6 +83,11 @@ variable "avi_virtual_service_port_vcenter" {
   type = string
   default = ""
 }
+variable "avi_vcenter_vrfcontext_for_pool" { 
+  description = "AVI VRF Context Name for vCenter Virtual Service"
+  type = string
+  default = ""
+}
 
 
 ## NSX variables

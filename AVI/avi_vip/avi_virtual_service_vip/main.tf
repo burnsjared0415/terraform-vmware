@@ -78,11 +78,18 @@ data "avi_network" "vcenter_network" {
     cloud_ref = data.avi_cloud.avi_cloud_name_vcenter.id
 }
 
+## Collect VRF Context from vCenter Cloud
+data "avi_vrfcontext" "vcenter_vrfcontext" {
+  name = var.avi_vcenter_vrfcontext_for_pool
+  cloud_ref = data.avi_cloud.avi_cloud_name_vcenter.id
+}
+
 ## Creation of AVI Virtual Service VIP for vCenter Backed Cloud
 resource "avi_vsvip" "virtual_service_2_vip_vcenter" {
-    for_each = var.virtual_service_list_vcenter
+  for_each = var.virtual_service_list_vcenter
 	name = each.value.virtual_service_name
-    tenant_ref = "/api/tenant/?name=admin"
+  tenant_ref = "/api/tenant/?name=admin"
+  vrf_context_ref = data.avi_vrfcontext.vcenter_vrfcontext.id
 	cloud_ref = data.avi_cloud.avi_cloud_name_vcenter.id
 	vip {
 		vip_id = each.value.virtual_service_id

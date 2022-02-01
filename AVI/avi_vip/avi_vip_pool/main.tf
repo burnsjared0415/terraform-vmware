@@ -67,12 +67,20 @@ data "avi_network" "vcenter_network" {
     cloud_ref = data.avi_cloud.avi_cloud_name_vcenter.id
 }
 
+## Creation of VRF Context for vCenter Virtual Service Pool(Required to allow creation of Virtual Service)
+resource "avi_vrfcontext" "vcenter_context" {
+  name = var.avi_vcenter_vrfcontext_for_pool
+  tenant_ref = "/api/tenant/?name=admin"
+	cloud_ref = data.avi_cloud.avi_cloud_name_vcenter.id
+}
+
 ## Build vCenter AVI Server Pool
 resource "avi_pool" "pool_2_vcenter" {
-    name = var.pool_2_name_vcenter
-    tenant_ref = "/api/tenant/?name=admin"
+  name = var.pool_2_name_vcenter
+  tenant_ref = "/api/tenant/?name=admin"
 	cloud_ref = data.avi_cloud.avi_cloud_name_vcenter.id
 	enabled = true
+  vrf_ref = avi_vrfcontext.vcenter_context.id
 	default_server_port = var.pool_2_default_server_port_vcenter
 	lb_algorithm = "LB_ALGORITHM_ROUND_ROBIN"
 	health_monitor_refs = [data.avi_healthmonitor.monitor.id]

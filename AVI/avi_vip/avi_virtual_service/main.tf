@@ -89,12 +89,19 @@ resource "avi_virtualservice" "vip_1_nsx" {
 	}
 }
 
-## Create Virtual Service for vCenter Cloud with Data above ( At the moment this is throwing issues with VRF Context, Bug has been reported)
+## Collect VRF Context from vCenter Cloud
+data "avi_vrfcontext" "vcenter_vrfcontext" {
+    name = var.avi_vcenter_vrfcontext_for_pool
+    cloud_ref = data.avi_cloud.avi_cloud_name_vcenter.id
+}
+
+## Create Virtual Service for vCenter Cloud with Data Collected
 resource "avi_virtualservice" "vip_2_vcenter" {
-    name = var.avi_virtual_service_name_vcenter
-    tenant_ref = "/api/tenant/?name=admin"
+  name = var.avi_virtual_service_name_vcenter
+  tenant_ref = "/api/tenant/?name=admin"
 	cloud_ref = data.avi_cloud.vcenter_cloud.id
 	pool_ref = data.avi_pool.vcenter_pool.id
+  vrf_context_ref = data.avi_vrfcontext.vcenter_vrfcontext.id
 	vsvip_ref = data.avi_vsvip.vsvip_2_vcenter.id
 	application_profile_ref = data.avi_applicationprofile.application_profile_1.id
 	se_group_ref = data.avi_serviceenginegroup.vcenter_cloud.id
