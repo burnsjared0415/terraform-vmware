@@ -44,21 +44,21 @@ data "nsxt_policy_tier1_gateway" "tier1_router" {
 resource "avi_pool" "pool_1_nsx" {
     name = var.pool_1_name_nsx
     tenant_ref = "/api/tenant/?name=admin"
-	cloud_ref = data.avi_cloud.avi_cloud_name_nsx.id
-	enabled = true
-	default_server_port = var.pool_1_default_server_port_nsx
-	lb_algorithm = "LB_ALGORITHM_ROUND_ROBIN"
-	tier1_lr = data.nsxt_policy_tier1_gateway.tier1_router.path
-	health_monitor_refs = [data.avi_healthmonitor.monitor.id]	 
+    cloud_ref = data.avi_cloud.avi_cloud_name_nsx.id
+    enabled = true
+    default_server_port = var.pool_1_default_server_port_nsx
+    lb_algorithm = "LB_ALGORITHM_ROUND_ROBIN"
+    tier1_lr = data.nsxt_policy_tier1_gateway.tier1_router.path
+    health_monitor_refs = [data.avi_healthmonitor.monitor.id]	 
 }
 
 ## Add Servers to NSX-T Server Pool
 resource "avi_server" "server_1_pool_1_nsx" {
     for_each = var.pool_member_nsx_list
-	ip = each.value.ip_address
-	pool_ref = avi_pool.pool_1_nsx.id
-	hostname = each.value.hostname
-	enabled = true
+    ip = each.value.ip_address
+    pool_ref = avi_pool.pool_1_nsx.id
+    hostname = each.value.hostname
+    enabled = true
 }
 
 ## Collect vCenter Network information from vCenter for assignment of port group to pool
@@ -71,36 +71,36 @@ data "avi_network" "vcenter_network" {
 resource "avi_vrfcontext" "vcenter_context" {
   name = var.avi_vcenter_vrfcontext_for_pool
   tenant_ref = "/api/tenant/?name=admin"
-	cloud_ref = data.avi_cloud.avi_cloud_name_vcenter.id
+  cloud_ref = data.avi_cloud.avi_cloud_name_vcenter.id
 }
 
 ## Build vCenter AVI Server Pool
 resource "avi_pool" "pool_2_vcenter" {
   name = var.pool_2_name_vcenter
   tenant_ref = "/api/tenant/?name=admin"
-	cloud_ref = data.avi_cloud.avi_cloud_name_vcenter.id
-	enabled = true
+  cloud_ref = data.avi_cloud.avi_cloud_name_vcenter.id
+  enabled = true
   vrf_ref = avi_vrfcontext.vcenter_context.id
-	default_server_port = var.pool_2_default_server_port_vcenter
-	lb_algorithm = "LB_ALGORITHM_ROUND_ROBIN"
-	health_monitor_refs = [data.avi_healthmonitor.monitor.id]
-    placement_networks {
-           network_ref = data.avi_network.vcenter_network.id
-            subnet {
-		     ip_addr {
-		      addr = var.avi_vcenter_placement_network
-			  type = "V4"
-			 }
-            mask = var.avi_vcenter_placement_network_mask
-           }
-	}	
+  default_server_port = var.pool_2_default_server_port_vcenter
+  lb_algorithm = "LB_ALGORITHM_ROUND_ROBIN"
+  health_monitor_refs = [data.avi_healthmonitor.monitor.id]
+  placement_networks {
+   network_ref = data.avi_network.vcenter_network.id
+    subnet {
+     ip_addr {
+      addr = var.avi_vcenter_placement_network
+      type = "V4"
+      }
+      mask = var.avi_vcenter_placement_network_mask
+     }
+   }	
 }
 
 ## Add Servers to vCenter Server Pool
 resource "avi_server" "server_2_pool_1_vcenter" {
-	for_each = var.pool_member_vcenter_list
-	ip = each.value.ip_address
-	pool_ref = avi_pool.pool_2_vcenter.id
-	hostname = each.value.hostname
-	enabled = true
+  for_each = var.pool_member_vcenter_list
+  ip = each.value.ip_address
+  pool_ref = avi_pool.pool_2_vcenter.id
+  hostname = each.value.hostname
+  enabled = true
 }
