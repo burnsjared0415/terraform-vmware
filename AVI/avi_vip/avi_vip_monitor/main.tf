@@ -9,9 +9,9 @@ provider "avi" {
 
 ## Creation of Health Monitors, this can be 1 new monitor or many new monitors
 resource "avi_healthmonitor" "monitor_1" {
-    for_each = var.monitor_name_port_list
-    name = each.value.monitor_name
-    tenant_ref = "/api/tenant/?name=admin"
-	type = "HEALTH_MONITOR_TCP"
-	monitor_port = each.value.monitor_port
+ for_each = var.monitor_name_port_list
+ name = each.value.monitor_name
+ tenant_ref = "/api/tenant/?name=admin"
+ type = "HEALTH_MONITOR_TCP"
+ monitor_port = each.value.monitor_port
 }
