@@ -76,17 +76,17 @@ data "avi_vsvip" "vsvip_2_vcenter" {
 
 ## Create Virtual Service for NSX-T Cloud with Data above
 resource "avi_virtualservice" "vip_1_nsx" {
-    name = var.avi_virtual_service_name_nsxt
-    tenant_ref = "/api/tenant/?name=admin"
-	cloud_ref = data.avi_cloud.nsxt_cloud.id
-	pool_ref = data.avi_pool.nsxt_pool.id
-	vrf_context_ref = data.avi_vrfcontext.segment.id
-	vsvip_ref = data.avi_vsvip.vsvip_1_nsxt.id
-	application_profile_ref = data.avi_applicationprofile.application_profile_1.id
-	se_group_ref = data.avi_serviceenginegroup.nsxt_cloud.id
-	services {
-	 port = var.avi_virtual_service_port_nsxt
-	}
+  name = var.avi_virtual_service_name_nsxt
+  tenant_ref = "/api/tenant/?name=admin"
+  cloud_ref = data.avi_cloud.nsxt_cloud.id
+  pool_ref = data.avi_pool.nsxt_pool.id
+  vrf_context_ref = data.avi_vrfcontext.segment.id
+  vsvip_ref = data.avi_vsvip.vsvip_1_nsxt.id
+  application_profile_ref = data.avi_applicationprofile.application_profile_1.id
+  se_group_ref = data.avi_serviceenginegroup.nsxt_cloud.id
+  services {
+    port = var.avi_virtual_service_port_nsxt
+  }
 }
 
 ## Collect VRF Context from vCenter Cloud
@@ -99,13 +99,13 @@ data "avi_vrfcontext" "vcenter_vrfcontext" {
 resource "avi_virtualservice" "vip_2_vcenter" {
   name = var.avi_virtual_service_name_vcenter
   tenant_ref = "/api/tenant/?name=admin"
-	cloud_ref = data.avi_cloud.vcenter_cloud.id
-	pool_ref = data.avi_pool.vcenter_pool.id
+  cloud_ref = data.avi_cloud.vcenter_cloud.id
+  pool_ref = data.avi_pool.vcenter_pool.id
   vrf_context_ref = data.avi_vrfcontext.vcenter_vrfcontext.id
-	vsvip_ref = data.avi_vsvip.vsvip_2_vcenter.id
-	application_profile_ref = data.avi_applicationprofile.application_profile_1.id
-	se_group_ref = data.avi_serviceenginegroup.vcenter_cloud.id
-	services {
-	 port = var.avi_virtual_service_port_vcenter
-	}
+  vsvip_ref = data.avi_vsvip.vsvip_2_vcenter.id
+  application_profile_ref = data.avi_applicationprofile.application_profile_1.id
+  se_group_ref = data.avi_serviceenginegroup.vcenter_cloud.id
+  services {
+    port = var.avi_virtual_service_port_vcenter
+  }
 }
