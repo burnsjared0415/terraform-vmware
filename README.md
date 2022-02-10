@@ -5,7 +5,7 @@ What is include on this Repo is as follows:
    - Build Tier1 and TierO Gateways
    - Build IP Pools in NSX-T
    - Build NSX-T Segments, Overlay and VLAN Backed
-   - Build Disributed Firewall Objects
+   - Build Distributed Firewall Objects
   
 # AVI
   - AVI Controller Creation and basic Configuration
