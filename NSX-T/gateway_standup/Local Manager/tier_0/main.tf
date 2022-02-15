@@ -26,13 +26,16 @@ resource "nsxt_policy_tier0_gateway" "tier0_gw" {
   internal_transit_subnets = [var.tier0_internal_transit_subnets]
   transit_subnets          = [var.tier0_transit_subnets]
   edge_cluster_path        = data.nsxt_policy_edge_cluster.EC.path
+}
 
-  bgp_config {
-    local_as_num    = var.tier0_local_as_num
-    multipath_relax = false
-	ecmp = true
-	inter_sr_ibgp = true
-  }
+## Creation of BGP Neighbor Configuration settings
+resource "nsxt_policy_bgp_config" "gw1" {
+  gateway_path = nsxt_policy_tier0_gateway.tier0_gw.path
+
+  enabled                = true
+  inter_sr_ibgp          = true
+  local_as_num           = var.tier0_local_as_num
+  graceful_restart_mode  = "HELPER_ONLY"
 }
 
 ## Collect Edge Node 1 for Creation of Interface
@@ -67,31 +70,33 @@ resource "nsxt_policy_vlan_segment" "uplink2" {
 }
 
 ## Create Tier-0 Interface for Edge Node 1
-resource "nsxt_policy_tier0_gateway_interface" "interface_uplink1_edge_node1" {
-  display_name = var.interface_name_uplink1_edge_node1
+resource "nsxt_policy_tier0_gateway_interface" "interface_uplink1_edge_nodes" {
+  for_each = var.tier0_interface_list_uplink_1
+  display_name = each.value.display_name
   type = "EXTERNAL"
   gateway_path = nsxt_policy_tier0_gateway.tier0_gw.path
   segment_path = nsxt_policy_vlan_segment.uplink1.path
-  subnets = [var.interface_ip_address_w_cidr_uplink1_node1]
+  subnets = each.value.subnets
   mtu = 9000
   edge_node_path = data.nsxt_policy_edge_node.node1.path
 }
 
 ## Create Tier-0 Interface for Edge Node 2
-resource "nsxt_policy_tier0_gateway_interface" "interface_uplink1_edge_node2" {
-  display_name = var.interface_name_uplink1_edge_node2
+resource "nsxt_policy_tier0_gateway_interface" "interface_uplink2_edge_nodes" {
+  for_each = var.tier0_interface_list_uplink_2
+  display_name = each.value.display_name
   type = "EXTERNAL"
   gateway_path = nsxt_policy_tier0_gateway.tier0_gw.path
-  segment_path = nsxt_policy_vlan_segment.uplink1.path
-  subnets = [var.interface_ip_address_w_cidr_uplink1_node2]
+  segment_path = nsxt_policy_vlan_segment.uplink2.path
+  subnets = each.value.subnets
   mtu = 9000
   edge_node_path = data.nsxt_policy_edge_node.node2.path
 }
 
-## Added BGP Neigherbors for Tier-0 to Switch Configuration
+## Added BGP Neighbors for Tier-0 to Switch Configuration Edge 1
 resource "nsxt_policy_bgp_neighbor" "neighbor_1" {
   display_name          = var.bgp_neighbor_1_name
-  bgp_path              = nsxt_policy_tier0_gateway.tier0_gw.bgp_config.0.path
+  bgp_path              = nsxt_policy_bgp_config.gw1.path
   allow_as_in           = true
   graceful_restart_mode = "HELPER_ONLY"
   hold_down_time        = 300
@@ -99,6 +104,19 @@ resource "nsxt_policy_bgp_neighbor" "neighbor_1" {
   neighbor_address      = var.bgp_switch_ip_address_uplink1
   password              = var.bgp_password
   remote_as_num         = var.bgp_remote_asn_number
-  source_addresses = [nsxt_policy_tier0_gateway_interface.interface_uplink1_edge_node1.ip_addresses[0], nsxt_policy_tier0_gateway_interface.interface_uplink1_edge_node2.ip_addresses[0]]
+  source_addresses = [nsxt_policy_tier0_gateway_interface.interface_uplink1_edge_nodes["config_1"].ip_addresses[0], nsxt_policy_tier0_gateway_interface.interface_uplink1_edge_nodes["config_2"].ip_addresses[0] ]
 }
 
+## Added BGP Neighbors for Tier-0 to Switch Configuration Edge 2
+resource "nsxt_policy_bgp_neighbor" "neighbor_2" {
+  display_name          = var.bgp_neighbor_2_name
+  bgp_path              = nsxt_policy_bgp_config.gw1.path
+  allow_as_in           = true
+  graceful_restart_mode = "HELPER_ONLY"
+  hold_down_time        = 300
+  keep_alive_time       = 100
+  neighbor_address      = var.bgp_switch_ip_address_uplink2
+  password              = var.bgp_password
+  remote_as_num         = var.bgp_remote_asn_number
+  source_addresses = [nsxt_policy_tier0_gateway_interface.interface_uplink2_edge_nodes["config_1"].ip_addresses[0], nsxt_policy_tier0_gateway_interface.interface_uplink2_edge_nodes["config_2"].ip_addresses[0] ]
+}

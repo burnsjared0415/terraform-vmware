@@ -14,7 +14,6 @@ variable "nsx_address" {
   type = string
   default = ""
 }
-
 variable "dhcp_server_name" { 
   description = "Name of DHCP Server"
   type = string 
@@ -30,11 +29,10 @@ variable "dhcp_external_ip" {
   type = list(string)
   default = [""]
 }
-variable "dhcp_relay_name" { 
-  description = "Name of DHCP Relay"
+variable "local_manager_name" { 
+  description = "This is the Site Name for the Local Managers you want to create the dfw policy on"
   type = string
-  default = ""
+  default =  ""
 }
-
 
 

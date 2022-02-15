@@ -60,7 +60,7 @@ variable "edge_node_2" {
   default = ""
 }
 variable "vlan_tz" {
-  description = "VLAN Transport Zone for Segments"
+  description = "VLAN Transport Zone for Uplinks"
   type = string
   default = ""
 }
@@ -119,6 +119,16 @@ variable "bgp_switch_ip_address_uplink1" {
   type = string
   default = ""
 }
+variable "bgp_neighbor_2_name" {
+  description = "BGP Neighbor first connection name"
+  type = string
+  default = ""
+}
+variable "bgp_switch_ip_address_uplink2" {
+  description = "BGP Switch Neighbor IP Address"
+  type = string
+  default = ""
+}
 variable "bgp_password" {
   description = "BGP Switch Neighbor Password"
   type = string
@@ -129,4 +139,37 @@ variable "bgp_remote_asn_number" {
   type = string
   default = ""
 }
-
+variable "tier0_interface_list_uplink_1" {
+  description = "Uplink IP Address for Uplink 1"
+  type = map(object({
+    display_name = string
+	subnets = list(string)
+	}))
+	default = {
+	"config_1" = {
+	display_name = ""
+	subnets = [""]
+	},
+	"config_2" = {
+	display_name = ""
+	subnets = [""]
+	}
+  }
+}
+variable "tier0_interface_list_uplink_2" {
+  description = "Uplink IP Address for Uplink 2"
+  type = map(object({
+    display_name = string
+	subnets = list(string)
+	}))
+	default = {
+	"config_1" = {
+	display_name = ""
+	subnets = [""]
+	},
+	"config_2" = {
+	display_name = ""
+	subnets = [""]
+	}
+  }
+}
