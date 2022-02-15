@@ -35,6 +35,7 @@ data "nsxt_policy_ip_pool" "ip_pool" {
   display_name = var.ip_pool_name
 }
 
+## Collects the data of the VLAN Transport Zone
 data "nsxt_policy_transport_zone" "vlan_tz" {
   display_name = var.vlan_tz
 }

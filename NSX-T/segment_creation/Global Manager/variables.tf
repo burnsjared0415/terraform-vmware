@@ -89,12 +89,6 @@ variable "segment_static_name_with_pool_cidr" {
   type = string
   default = ""
 }
-
-variable "ip_pool_name" {
-  description = "IP Pool Name"
-  type = string
-  default = ""
-}
 variable "segment_vlan_name_list" {
   description = "List of Segments to create with VLAN Tags"
   type = map(object({
@@ -111,4 +105,9 @@ variable "segment_vlan_name_list" {
 	segment_vlan_id = [""]
 	}
   }
+}
+variable "local_manager_name" { 
+  description = "This is the Site Name for the Local Managers you want to create the dfw policy on"
+  type = string
+  default =  ""
 }
