@@ -6,6 +6,7 @@ What is include on this Repo is as follows:
    - Build Tier1 and TierO Gateways
    - Build NSX-T Segments, Overlay and VLAN Backed
    - Build Distributed Firewall Objects
+  
   Local Manager
    - Build DHCP Server/Relay in NSX-T
    - Build Tier1 and TierO Gateways
