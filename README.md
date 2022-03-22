@@ -14,7 +14,7 @@ What is include on this Repo is as follows:
    - Build NSX-T Segments, Overlay and VLAN Backed
    - Build Distributed Firewall Objects
 # AVI
-  - AVI Controller Creation and basic Configuration
+  - AVI Controller Creation and Base Configuration
   - AVI Cloud creation NSX-T and vCenter
   - AVI Service Engine Creation
   - AVI Virtual Service Creation, includes, Pool Creation, Virtual Service IP creation based on vCenter and NSX-T Clouds and Also Virtual Service
