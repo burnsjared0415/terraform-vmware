@@ -1,5 +1,5 @@
 # Terraform Examples of NSX-T and AVI
-What is include on this Repo is as follows:
+What is include on this repo is as follows:
 # NSX-T 
   Global Manager
    - Build DHCP Server in NSX-T
